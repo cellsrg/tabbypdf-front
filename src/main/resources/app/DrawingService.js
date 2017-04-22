@@ -116,8 +116,6 @@ define([
         selectedRectangle = null;
         isMouseDown = false;
 
-        console.log(_data);
-
         return false;
     }
 

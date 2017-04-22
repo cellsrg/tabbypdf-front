@@ -1,5 +1,7 @@
-define(function () {
-    var root = "";//"pdfte";
+define([
+    "Config"
+],function (config) {
+    var root = config.apiRoot;
     var uploadUrl = root + "/api/upload";
     var extractUrl = root + "/api/extract";
     var downloadUrl = root + "/api/download";
