@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tabby PDF</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css">
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+    <script data-main="app" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.js"></script>
+    <link rel="stylesheet" type="text/css" href="root.css"/>
+    <script src='lib/pdfjs/pdf.js'></script>
+</head>
+<body>
+<div class="main ui container">
+    <div class="ui vertical basic segment">
+        <h1 class="ui huge header">PDF table extraction tool</h1>
+        <div class="ui divider"></div>
+        <h2>Simply extract tables from PDF files and convert to Excel format</h2>
+
+        <h3>Manual:</h3>
+        <div class="ui bulleted list">
+            <div class="item">Click the "Open file" button</div>
+            <div class="item">Select any PDF file</div>
+            <div class="item">Wait until it is processed</div>
+            <div class="item">
+                Change table selection areas
+                <div class="bulleted list">
+                    <div class="item">Click, drag & release left mouse button to add area</div>
+                    <div class="item">Drag the side of any area to resize it</div>
+                    <div class="item">Click the close button near any rectangle to remove it</div>
+                </div>
+            </div>
+            <div class="item">Click the "Extract" button</div>
+        </div>
+        <div class="ui divider"></div>
+
+        <div class="buttons">
+            <label for="file" class="ui icon button">
+                <i class="file icon"></i>
+                Open File
+            </label>
+            <input type="file" id="file" style="display:none" accept="application/pdf">
+
+            <button id="extract" class="ui primary icon button" style="display: none;">
+                <i class="search icon"></i>
+                Extract
+            </button>
+
+            <button id="showPdf" class="ui icon button" style="display: none;">
+                <i class="file pdf outline icon"></i>
+                Show PDF
+            </button>
+
+            <button id="showTables" class="ui icon button" style="display: none;">
+                <i class="table icon"></i>
+                Show tables
+            </button>
+
+            <button id="downloadResults" class="ui icon button" style="display: none;">
+                <i class="download icon"></i>
+                Download results
+            </button>
+        </div>
+    </div>
+    <div class="ui basic segment" id="pdfContainer">
+        <div id="pages">
+        </div>
+    </div>
+
+    <div id="htmlContainer">
+    </div>
+</div>
+</body>
+</html>
