@@ -53,30 +53,27 @@ define([
         x2 = event.pageX - getCoords(canvas).left;
         y2 = event.pageY - getCoords(canvas).top;
 
-        if (event.button == 0) {
-            if (isMouseDown) {
-                var rects = getRectanglesArray(id);
-                if (selectedRectangle) {
-                    selectedRectangle.clicked = true;
-                    if (selectedRectangle.getDragDirection(x2, y2) != selectedRectangle.dragDirections.NONE) {
-                        selectedRectangle.resize(x2, y2);
-                        selectedRectangle.draw(canvas, _data[id].image, rects)
-                    }
-                } else {
-                    newRectangle = new Rectangle(
-                        x1 < x2 ? x1 : x2,
-                        y1 < y2 ? y1 : y2,
-                        x1 > x2 ? x1 : x2,
-                        y1 > y2 ? y1 : y2
-                    );
-                    rects.push(newRectangle);
-                    newRectangle.draw(canvas, _data[id].image, rects);
+        if (event.button == 0 && isMouseDown) {
+            var rects = getRectanglesArray(id);
+            if (selectedRectangle) {
+                selectedRectangle.clicked = true;
+                if (selectedRectangle.getDragDirection(x2, y2) != selectedRectangle.dragDirections.NONE
+                    && !selectedRectangle.isCloseHovered(x2, y2)) {
+                    selectedRectangle.resize(x2, y2);
+                    selectedRectangle.draw(canvas, _data[id].image, rects)
                 }
             } else {
-                canvas.style.cursor = getCursorStyle(getRectangle(id, x2, y2), x2, y2);
+                newRectangle = new Rectangle(
+                    x1 < x2 ? x1 : x2,
+                    y1 < y2 ? y1 : y2,
+                    x1 > x2 ? x1 : x2,
+                    y1 > y2 ? y1 : y2
+                );
+                rects.push(newRectangle);
+                newRectangle.draw(canvas, _data[id].image, rects);
             }
         }
-
+        canvas.style.cursor = getCursorStyle(getRectangle(id, x2, y2), x2, y2);
     }
 
     function mouseUpHandler(event) {

@@ -8,25 +8,25 @@ define(function () {
         /**
          * Left
          */
-        this.x1 = typeof x1 !== 'undefined' ? x1 : 0
+        this.x1 = x1 || 0;
         /**
          * Top
          */
-        this.y1 = typeof y1 !== 'undefined' ? y1 : 0;
+        this.y1 = y1 || 0;
         /**
          * Right
          */
-        this.x2 = typeof x2 !== 'undefined' ? x2 : 0;
+        this.x2 = x2 || 0;
         /**
          * Bottom
          */
-        this.y2 = typeof y2 !== 'undefined' ? y2 : 0;
+        this.y2 = y2 || 0;
 
         this.clicked = false;
         var DRAG_THRESHOLD = 5;
         var MIN_SIZE = 30;
         var closeRadius = 7;
-        var closeOffset = 10;
+        var closeOffset = -10;
 
         var standardDirections = {
             NONE: 0,
@@ -217,7 +217,11 @@ define(function () {
         }
 
         this.isCloseHovered = function (x, y) {
-            return Math.pow(x - (this.x2 + closeOffset), 2) + Math.pow(y - (this.y1 - closeOffset), 2) <= closeRadius * 3;
+            return (
+                (Math.pow(x - (this.x2 + closeOffset), 2) +
+                Math.pow(y - (this.y1 - closeOffset), 2))
+                <= Math.pow(closeRadius, 2)
+            );
         }
     }
 
