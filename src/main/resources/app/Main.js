@@ -53,6 +53,7 @@ define(
                 var file = event.target.files[0];
                 processFile(file);
             }
+            event.target.value = null;
         });
 
         // запрет включения скролла средней кнопкой мыши
