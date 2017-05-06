@@ -22,7 +22,7 @@ define(
             $("#showPdf").hide();
             $("#showTables").show();
             $("#pdfContainer").show();
-            $("#htmlContainer").hide();
+
         });
 
         // отобразить контейнер с html-таблицами
@@ -44,7 +44,9 @@ define(
                 $("#showTables").hide();
                 $("#downloadResults").hide();
                 $("#pages").empty();
-                $("#htmlContainer").empty();
+                var $htmlContainer = $("#htmlContainer");
+                $htmlContainer.hide();
+                $htmlContainer.empty();
                 $("#pdfContainer").show();
 
                 data = {};
@@ -62,7 +64,7 @@ define(
          * при нажатии на "Extract", подготавливаем данные для передачи на сервер, отправляем запрос, и обрабатываем
          * пришедшие с сервера таблицы
          */
-        $("#extract").click(function (event) {
+        $("#extract").click(function () {
             $("#showPdf").hide();
             $("#showTables").hide();
             $("#htmlContainer").empty();
@@ -75,7 +77,8 @@ define(
                     var page = response.pages[pageId];
                     var pageSegment = $("<div class='ui segments'><h4>Page #" + (1 + parseInt(pageId)) + "</h4></div>");
                     Object.keys(page).forEach(function (tableId) {
-                        var tableSegment = $("<div class='ui segment'><h5>Table #" + (1 + parseInt(tableId)) + "</h5></div>");
+                        var tableSegment =
+                            $("<div class='ui segment'><h5>Table #" + (1 + parseInt(tableId)) + "</h5></div>");
                         var table = $(page[tableId].html);
                         table.addClass("ui celled table");
                         table.appendTo(tableSegment);
@@ -84,16 +87,18 @@ define(
                     pageSegment.appendTo("#htmlContainer");
                 });
 
-                $("#pdfContainer").removeClass("loading");
-                $("#pdfContainer").hide();
+                var $pdfContainer = $("#pdfContainer");
+                $pdfContainer.removeClass("loading");
+                $pdfContainer.hide();
                 $("#htmlContainer").show();
                 $("#showPdf").show();
 
                 var resultId = response["resultId"];
                 if (resultId) {
-                    $("#downloadResults").show();
-                    $("#downloadResults").off("click");
-                    $("#downloadResults").click(function () {
+                    var $downloadResults = $("#downloadResults");
+                    $downloadResults.show();
+                    $downloadResults.off("click");
+                    $downloadResults.click(function () {
                         backendService.downloadFile(resultId);
                     });
                 }
@@ -132,7 +137,7 @@ define(
             $("#pdfContainer").addClass("loading");
 
             var reader = new FileReader();
-            reader.onload = function (event) {
+            reader.onload = function () {
                 //сначала рендерим pdf
                 var arrayBuffer = this.result;
                 PdfRenderService.renderPdf(new Uint8Array(arrayBuffer)).then(function (canvases) {
@@ -166,8 +171,9 @@ define(
                     backendService.uploadFile(file).then(function (response) {
                         processResponse(response);
 
-                        $("#pdfContainer").removeClass("loading");
-                        $("#pdfContainer").show();
+                        var $pdfContainer = $("#pdfContainer");
+                        $pdfContainer.removeClass("loading");
+                        $pdfContainer.show();
                         $("#extract").show();
                     })
 
