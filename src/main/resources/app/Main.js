@@ -73,20 +73,24 @@ define(
             var extractData = prepareExtractionData();
 
             $("#pdfContainer").addClass("loading");
-            backendService.extract(extractData).then(function (response) {
-                Object.keys(response.pages).forEach(function (pageId) {
-                    var page = response.pages[pageId];
-                    var pageSegment = $("<div class='ui segments'><h4>Page #" + (1 + parseInt(pageId)) + "</h4></div>");
-                    Object.keys(page).forEach(function (tableId) {
-                        var tableSegment =
-                            $("<div class='ui segment'><h5>Table #" + (1 + parseInt(tableId)) + "</h5></div>");
-                        var table = $(page[tableId].html);
+            backendService.extract(extractData).then(function (json) {
+                var pages = json.pages;
+                for (var i = 0; i < pages.length; i++) {
+                    var page = json.pages[i];
+                    var pageId = page.pageNumber;
+
+                    var pageSegment = $("<div class='ui segments'><h4>Page #" + (1 + pageId) + "</h4></div>");
+
+                    var tables = page.tables;
+                    for (var tableId = 0; tableId < tables.length; tableId++) {
+                        var tableSegment = $("<div class='ui segment'><h5>Table #" + (1 + tableId) + "</h5></div>");
+                        var table = $(tables[tableId].html);
                         table.addClass("ui celled table");
                         table.appendTo(tableSegment);
                         pageSegment.append(tableSegment);
-                    });
+                    }
                     pageSegment.appendTo("#htmlContainer");
-                });
+                }
 
                 var $pdfContainer = $("#pdfContainer");
                 $pdfContainer.removeClass("loading");
@@ -94,7 +98,7 @@ define(
                 $("#htmlContainer").show();
                 $("#showPdf").show();
 
-                var resultId = response["resultId"];
+                var resultId = json.resultId;
                 if (resultId) {
                     var $downloadResults = $("#downloadResults");
                     $downloadResults.show();
@@ -108,14 +112,17 @@ define(
 
         //подготовка данных о выделенных областях для передачи на сервер
         function prepareExtractionData() {
-            var extractData = {pages: {}};
+            var extractData = {pages: []};
             Object.keys(data).forEach(function (id) {
                 if (id !== "fileId") {
-                    var pageData = {};
+                    var pageData = {
+                        pageNumber: id,
+                        tables: []
+                    };
                     extractData.pages[id] = pageData;
                     var rects = data[id].rectangles;
                     Object.keys(rects).forEach(function (rectId) {
-                        pageData[rectId] = {
+                        pageData.tables[rectId] = {
                             left: rects[rectId].x1 / data[id].canvas.width,
                             right: rects[rectId].x2 / data[id].canvas.width,
                             top: (data[id].canvas.height - rects[rectId].y1) / data[id].canvas.height,
@@ -187,23 +194,24 @@ define(
         function processResponse(json) {
             data.fileId = json.id;
             var pages = json.pages;
-            Object.keys(pages).forEach(function (pageNumber) {
+            for (var i = 0; i < pages.length; i++) {
+                var pageNumber = pages[i].pageNumber;
                 var canvas = $("#pages").find("canvas#" + pageNumber)[0];
-
                 data[pageNumber] = {
                     canvas: canvas,
                     image: canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height),
                     rectangles: {}
                 };
 
-                createRectangles(pages[pageNumber], canvas, pageNumber);
-            });
+                createRectangles(pages[i], canvas, pageNumber);
+            };
             DrawingService.setData(data);
         }
 
         function createRectangles(responsePage, canvas, pageNumber) {
-            Object.keys(responsePage).forEach(function (tableNumber) {
-                var table = responsePage[tableNumber];
+            var tables = responsePage.tables;
+            for (var tableNumber = 0; tableNumber < tables.length; tableNumber++) {
+                var table = tables[tableNumber];
 
                 var rectangle = new Rectangle(
                     table.left * canvas.width,
@@ -218,7 +226,7 @@ define(
                 );
 
                 data[pageNumber].rectangles[tableNumber] = rectangle;
-            });
+            }
         }
     }
 );
