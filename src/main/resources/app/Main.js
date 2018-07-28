@@ -33,6 +33,11 @@ define(
             $("#htmlContainer").show();
         });
 
+        $("#annotate").click(function () {
+            backendService.annotate(prepareExtractionData())
+        });
+
+
         /**
          * при выборе нового файла прячем лишние кнопки, сбрасываем данные, очищаем контейнеры с pdf и таблицами
          * затем обрабатываем выбранный файл
@@ -40,6 +45,7 @@ define(
         $("#file").change(function (event) {
             if (event.target.files.length == 1) {
                 $("#extract").hide();
+                $("#annotate").hide();
                 $("#showPdf").hide();
                 $("#showTables").hide();
                 $("#downloadResults").hide();
@@ -183,6 +189,7 @@ define(
                         $pdfContainer.removeClass("loading");
                         $pdfContainer.show();
                         $("#extract").show();
+                        $("#annotate").show();
                     })
 
                 });

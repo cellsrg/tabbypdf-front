@@ -5,6 +5,7 @@ define([
     var uploadUrl = root + "/api/upload";
     var extractUrl = root + "/api/extract";
     var downloadUrl = root + "/api/download";
+    var annotateUrl = root + "/api/annotate";
 
     var POST = "POST";
     var GET = "GET";
@@ -35,6 +36,12 @@ define([
                 success: function () {
                     window.location = url;
                 }
+            });
+        },
+
+        annotate: function (data) {
+            makeRequest(POST, annotateUrl, JSON.stringify(data), true).then(function (response) {
+                window.location = downloadUrl + "/" + response;
             });
         },
 
